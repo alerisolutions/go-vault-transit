@@ -1,5 +1,58 @@
 # go-vault-transit
-Convenince library for accessing vault's transit engine
+Convenience library for accessing vault's transit engine
+
+## Examples
+
+### Accessing the transit engine
+
+```go
+import (
+    "github.com/hashicorp/vault/api"
+)
+
+(...)
+    cfg := api.DefaultConfig()
+    // more config options, e.g. enable tls
+    client, err := api.NewClient(cfg)
+    if err != nil {
+        panic(err)
+    }
+    engine := NewTransitWithPath(client, "/transit")
+```
+
+### Key Management
+
+Supported Operations:
+* Create Key 
+* List Keys
+* Read Key Metadata
+* Delete Keys
+
+Create a named Key with a specific type and options:
+```go
+	err := engine.CreateKey("key1", WithType("aes256-gcm96"), WithConvergentEncryption(), WithDerived())
+```
+
+List all keys
+```go
+    keys, err := engine.ListKeys()
+    // ...
+    for keyName := range keys {
+        // ...
+    }
+```
+
+Read metadata of a named key
+```go
+	keySpec, err := engine.ReadKey("key1")
+    // ...
+    fmt.Printf("%#v", keySpec)
+```
+
+Delete a named key
+```go
+	err = engine.DeleteKey("key1")
+```
 
 ## Testing
 

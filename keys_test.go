@@ -29,9 +29,6 @@ func keyCycle1(t *testing.T, keyName, keyType string) {
 	if err != nil {
 		t.Errorf("cannot read %s key config: %s error: %s", keyType, keyName, err)
 	}
-	if ks == nil {
-		t.Errorf("ReadKey returned nil keyspec")
-	}
 	if ks.KeyType == nil {
 		t.Errorf("ReadKey returned nil KeyType in keyspec")
 	}
@@ -80,9 +77,6 @@ func TestKeyOptions(t *testing.T) {
 	ks, err := i.ReadKey(keyName)
 	if err != nil {
 		t.Errorf("cannot read %s key config: %s error: %s", keyType, keyName, err)
-	}
-	if ks == nil {
-		t.Errorf("ReadKey returned nil keyspec")
 	}
 	if ks.ConvergentEncryption == nil {
 		t.Errorf("ReadKey keyspec value is nil")

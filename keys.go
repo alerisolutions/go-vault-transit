@@ -61,12 +61,10 @@ func (t *Transit) ListKeys() ([]string, error) {
 	return res, err
 }
 
-func (t *Transit) ReadKey(keyName string) (*KeySpec, error) {
-	var res *KeySpec
+func (t *Transit) ReadKey(keyName string) (KeySpec, error) {
+	var res KeySpec
 	s, err := t.client.Logical().Read(t.pathFor2("keys", keyName))
 	if s != nil {
-		res = &KeySpec{}
-
 		t, ex := (s.Data)["type"].(string)
 		if ex {
 			res.KeyType = &t
