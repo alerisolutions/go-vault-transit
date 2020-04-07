@@ -8,6 +8,7 @@ Convenience library for accessing vault's transit engine
 ```go
 import (
     "github.com/hashicorp/vault/api"
+    "github.com/alerisolutions/go-vault-transit/v1"
 )
 
 (...)
@@ -17,7 +18,7 @@ import (
     if err != nil {
         panic(err)
     }
-    engine := NewTransitWithPath(client, "/transit")
+    engine := transit.NewTransitWithPath(client, "/transit")
 ```
 
 ### Key Management
@@ -30,28 +31,35 @@ Supported Operations:
 
 Create a named Key with a specific type and options:
 ```go
-	err := engine.CreateKey("key1", WithType("aes256-gcm96"), WithConvergentEncryption(), WithDerived())
+err := engine.CreateKey("key1", WithType("aes256-gcm96"), WithConvergentEncryption(), WithDerived())
 ```
 
-List all keys
+List all keys:
 ```go
-    keys, err := engine.ListKeys()
+keys, err := engine.ListKeys()
+// ...
+for _, keyName := range keys {
     // ...
-    for keyName := range keys {
-        // ...
-    }
+}
 ```
 
-Read metadata of a named key
+Read metadata of a named key:
 ```go
-	keySpec, err := engine.ReadKey("key1")
-    // ...
-    fmt.Printf("%#v", keySpec)
+keySpec, err := engine.ReadKey("key1")
+// ...
+fmt.Printf("%#v", keySpec)
 ```
 
-Delete a named key
+Delete a named key:
 ```go
-	err = engine.DeleteKey("key1")
+err = engine.DeleteKey("key1")
+```
+
+### Hashing
+
+Compute hash value from byte array with given algorithm and output format:
+```go
+hash, err := i.Hash([]byte("Something"), HashWithAlgo("sha2-224"), HashWithFormat("base64"))
 ```
 
 ## Testing
