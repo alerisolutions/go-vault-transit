@@ -1,4 +1,4 @@
-module go-vault-transit
+module go-vault-transit/v1
 
 go 1.13
 

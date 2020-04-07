@@ -6,15 +6,23 @@ import (
 	vaultapi "github.com/hashicorp/vault/api"
 )
 
+// Transit wraps the vault api client with a path being the entry
+// point to the transit engine.
 type Transit struct {
 	client     *vaultapi.Client
 	EnginePath string
 }
 
+// NewTransit creates a new transit client struct with a default engine path of /transit
 func NewTransit(client *vaultapi.Client) *Transit {
+	return NewTransitWithPath(client, "/transit")
+}
+
+//NewTransitWithPath creates a new transit client struct with an individual engine path
+func NewTransitWithPath(client *vaultapi.Client, pathToTransitEngine string) *Transit {
 	return &Transit{
 		client:     client,
-		EnginePath: "/transit",
+		EnginePath: pathToTransitEngine,
 	}
 }
 
