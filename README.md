@@ -13,12 +13,14 @@ import (
 )
 
 (...)
+    // set up vault api client
     cfg := api.DefaultConfig()
     // more config options, e.g. enable tls
     client, err := api.NewClient(cfg)
     if err != nil {
         panic(err)
     }
+
     engine := transit.NewTransitWithPath(client, "/transit")
 ```
 
@@ -76,11 +78,22 @@ bOk, err := i.VerifyHmac("key1", input, hmac1, WithHmacAlgo("sha2-512"))
 
 ```go
 	plaintext := "Something"
-	ciphertext, err := i.Encrypt(keyName, []byte(plaintext))
-    decrypted, err := i.Decrypt(keyName, ciphertext)
+	ciphertext, err := i.Encrypt("key1", []byte(plaintext))
+    decrypted, err := i.Decrypt("key1", ciphertext)
     // decrypted == plaintext
 
 ```
+
+### Signature and Verify
+
+```go
+	input := "Something"
+	signature, err := i.Sign("key1", []byte(input), WithSignAlgo("sha2-256"))
+    valid, err := i.Verify("key1", []byte(input), signature, WithSignAlgo("sha2-256"))
+    // valid == true
+
+```
+
 
 ## Testing
 

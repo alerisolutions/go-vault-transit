@@ -16,6 +16,20 @@ var (
 	keyOptionTrue = true
 )
 
+// Key Types
+// https://www.vaultproject.io/api/secret/transit/index.html#type
+const (
+	KeyTypeAES128GCM96      = "aes128-gcm96"
+	KeyTypeAES256GCM96      = "aes128-gcm96"
+	KeyTypeCHACHA20POLY1305 = "chacha20-poly1305"
+	KeyTypeED25519          = "ed25519"
+	KeyTypeECDSAP256        = "ecdsa-p256"
+	KeyTypeECDSAP384        = "ecdsa-p384"
+	KeyTypeECDSAP521        = "ecdsa-p521"
+	KeyTypeRSA2048          = "rsa-2048"
+	KeyTypeRSA4096          = "rsa-4096"
+)
+
 // WithType Sets the key Type
 func WithType(keyType string) KeySpecOption {
 	return func(spec *KeySpec) {
@@ -135,7 +149,6 @@ func (t *Transit) HasKey(keyName string) (bool, error) {
 		ex = true
 	}
 	return ex, err
-
 }
 
 // DeleteKey deletes a named key

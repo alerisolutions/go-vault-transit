@@ -54,7 +54,7 @@ func keyCycle1(t *testing.T, keyName, keyType string) {
 
 func TestKeyCycle(t *testing.T) {
 	keyName := "testkey2"
-	keyTypes := []string{"aes128-gcm96", "aes256-gcm96"}
+	keyTypes := []string{KeyTypeAES128GCM96, KeyTypeAES256GCM96, KeyTypeCHACHA20POLY1305, KeyTypeED25519, KeyTypeECDSAP256, KeyTypeECDSAP384, KeyTypeECDSAP521, KeyTypeRSA2048, KeyTypeRSA4096}
 
 	for _, keyType := range keyTypes {
 		keyCycle1(t, keyName, keyType)
@@ -63,7 +63,7 @@ func TestKeyCycle(t *testing.T) {
 
 func TestKeyOptions1(t *testing.T) {
 	keyName := fmt.Sprintf("k1-%d", time.Now().Unix())
-	keyType := "aes256-gcm96"
+	keyType := KeyTypeAES256GCM96
 	err := i.CreateKey(keyName, WithType(keyType), WithConvergentEncryption(), WithDerived(), WithExportable(), WithPlaintextBackup())
 	if err != nil {
 		t.Errorf("cannot create %s key: %s error: %s", keyType, keyName, err)
@@ -110,7 +110,7 @@ func TestKeyOptions1(t *testing.T) {
 
 func TestKeyOptions2(t *testing.T) {
 	keyName := fmt.Sprintf("k1-%d", time.Now().Unix())
-	keyType := "aes256-gcm96"
+	keyType := KeyTypeAES256GCM96
 	err := i.CreateKey(keyName, WithType(keyType))
 	if err != nil {
 		t.Errorf("cannot create %s key: %s error: %s", keyType, keyName, err)
@@ -157,7 +157,7 @@ func TestKeyOptions2(t *testing.T) {
 
 func TestList(t *testing.T) {
 	keyNames := []string{"testkey1", "testkey2", "testkey3"}
-	keyType := "aes256-gcm96"
+	keyType := KeyTypeAES256GCM96
 
 	for _, keyName := range keyNames {
 		err := i.CreateKey(keyName, WithType(keyType))
