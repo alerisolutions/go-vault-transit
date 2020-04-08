@@ -1,5 +1,6 @@
 # go-vault-transit
-Convenience library for accessing vault's transit engine
+
+Convenience library for accessing vault's transit engine. Allows for writing application which use Encryption-as-a-service where key material is handled by Vault and not by the application.
 
 ## Examples
 
@@ -31,7 +32,7 @@ Supported Operations:
 
 Create a named Key with a specific type and options:
 ```go
-err := engine.CreateKey("key1", WithType("aes256-gcm96"), WithConvergentEncryption(), WithDerived())
+err := engine.CreateKey("key1", WithType("aes256-gcm96"), WithExportable(),  WithPlaintextBackup())
 ```
 
 List all keys:
@@ -59,7 +60,26 @@ err = engine.DeleteKey("key1")
 
 Compute hash value from byte array with given algorithm and output format:
 ```go
-hash, err := i.Hash([]byte("Something"), HashWithAlgo("sha2-224"), HashWithFormat("base64"))
+hash, err := i.Hash([]byte("Something"), WithHashAlgo("sha2-224"), WithHashFormat("base64"))
+```
+
+### Hmac computation and verification
+
+```go
+input := []byte("Something")
+hmac1, err := i.Hmac("key1", input, WithHmacAlgo("sha2-512"))
+bOk, err := i.VerifyHmac("key1", input, hmac1, WithHmacAlgo("sha2-512"))
+// bOk == true
+```
+
+### Encryption and Decryption
+
+```go
+	plaintext := "Something"
+	ciphertext, err := i.Encrypt(keyName, []byte(plaintext))
+    decrypted, err := i.Decrypt(keyName, ciphertext)
+    // decrypted == plaintext
+
 ```
 
 ## Testing

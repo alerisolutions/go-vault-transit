@@ -1,6 +1,7 @@
 package transit
 
 import (
+	"fmt"
 	"os"
 	"testing"
 	"time"
@@ -60,10 +61,10 @@ func TestKeyCycle(t *testing.T) {
 	}
 }
 
-func TestKeyOptions(t *testing.T) {
-	keyName := "k1"
+func TestKeyOptions1(t *testing.T) {
+	keyName := fmt.Sprintf("k1-%d", time.Now().Unix())
 	keyType := "aes256-gcm96"
-	err := i.CreateKey(keyName, WithType(keyType), WithConvergentEncryption(), WithDerived())
+	err := i.CreateKey(keyName, WithType(keyType), WithConvergentEncryption(), WithDerived(), WithExportable(), WithPlaintextBackup())
 	if err != nil {
 		t.Errorf("cannot create %s key: %s error: %s", keyType, keyName, err)
 		return
@@ -78,16 +79,72 @@ func TestKeyOptions(t *testing.T) {
 	if err != nil {
 		t.Errorf("cannot read %s key config: %s error: %s", keyType, keyName, err)
 	}
-	if ks.ConvergentEncryption == nil {
+	if ks.Derived == nil {
 		t.Errorf("ReadKey keyspec value is nil")
+		return
 	}
-	if *ks.ConvergentEncryption != true {
+	if *ks.Derived != true {
 		t.Errorf("ReadKey keyspec value is wrong")
+	}
+	if ks.Exportable == nil {
+		t.Errorf("ReadKey keyspec value is nil")
+		return
+	}
+	if *ks.Exportable != true {
+		t.Errorf("ReadKey keyspec value is wrong")
+	}
+	if ks.AllowPlaintextBackup == nil {
+		t.Errorf("ReadKey keyspec value is nil")
+		return
+	}
+	if *ks.AllowPlaintextBackup != true {
+		t.Errorf("ReadKey keyspec value is wrong")
+	}
+
+	err = i.DeleteKey(keyName)
+	if err != nil {
+		t.Errorf("cannot delete %s key: %s error: %s", keyType, keyName, err)
+	}
+
+}
+
+func TestKeyOptions2(t *testing.T) {
+	keyName := fmt.Sprintf("k1-%d", time.Now().Unix())
+	keyType := "aes256-gcm96"
+	err := i.CreateKey(keyName, WithType(keyType))
+	if err != nil {
+		t.Errorf("cannot create %s key: %s error: %s", keyType, keyName, err)
+		return
+	}
+	err = i.UpdateKeyAllowDeletion(keyName)
+	if err != nil {
+		t.Errorf("cannot update %s key config: %s error: %s", keyType, keyName, err)
+		return
+	}
+
+	ks, err := i.ReadKey(keyName)
+	if err != nil {
+		t.Errorf("cannot read %s key config: %s error: %s", keyType, keyName, err)
 	}
 	if ks.Derived == nil {
 		t.Errorf("ReadKey keyspec value is nil")
+		return
 	}
-	if *ks.Derived != true {
+	if *ks.Derived == true {
+		t.Errorf("ReadKey keyspec value is wrong")
+	}
+	if ks.Exportable == nil {
+		t.Errorf("ReadKey keyspec value is nil")
+		return
+	}
+	if *ks.Exportable == true {
+		t.Errorf("ReadKey keyspec value is wrong")
+	}
+	if ks.AllowPlaintextBackup == nil {
+		t.Errorf("ReadKey keyspec value is nil")
+		return
+	}
+	if *ks.AllowPlaintextBackup == true {
 		t.Errorf("ReadKey keyspec value is wrong")
 	}
 
@@ -120,8 +177,16 @@ func TestList(t *testing.T) {
 	if err != nil {
 		t.Errorf("cannot list keys: %s", err)
 	}
-	if len(keys) != len(keyNames) {
-		t.Errorf("Key lists not equal (len)")
+	for _, keyName := range keyNames {
+		bFound := false
+		for _, compareKeyName := range keys {
+			if compareKeyName == keyName {
+				bFound = true
+			}
+		}
+		if !bFound {
+			t.Errorf("Expect key=%s in keylist but not found", keyName)
+		}
 	}
 
 	for _, keyName := range keyNames {

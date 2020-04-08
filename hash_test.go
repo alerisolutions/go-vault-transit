@@ -4,19 +4,13 @@ import (
 	"testing"
 )
 
-/*
-var (
-	i *Transit
-)
-*/
-
 func TestHash(t *testing.T) {
 	hash1, err := i.Hash([]byte("Something"))
 	if err != nil {
 		t.Errorf("Unable to hash value. error: %s", err)
 	}
 
-	hash2, err := i.Hash([]byte("Something"), HashWithAlgo("sha2-256"), HashWithFormat("hex"))
+	hash2, err := i.Hash([]byte("Something"), WithHashAlgo("sha2-256"), WithHashFormat("hex"))
 	if err != nil {
 		t.Errorf("Unable to hash value. error: %s", err)
 	}
@@ -25,7 +19,7 @@ func TestHash(t *testing.T) {
 		t.Error("Error comparing values")
 	}
 
-	hash3, err := i.Hash([]byte("Something"), HashWithAlgo("sha2-224"), HashWithFormat("hex"))
+	hash3, err := i.Hash([]byte("Something"), WithHashAlgo("sha2-224"), WithHashFormat("hex"))
 	if err != nil {
 		t.Errorf("Unable to hash value. error: %s", err)
 	}
@@ -34,7 +28,7 @@ func TestHash(t *testing.T) {
 		t.Error("Error comparing values")
 	}
 
-	hash4, err := i.Hash([]byte("Something"), HashWithAlgo("sha2-224"), HashWithFormat("base64"))
+	hash4, err := i.Hash([]byte("Something"), WithHashAlgo("sha2-224"), WithHashFormat("base64"))
 	if err != nil {
 		t.Errorf("Unable to hash value. error: %s", err)
 	}
@@ -43,7 +37,7 @@ func TestHash(t *testing.T) {
 		t.Error("Error comparing values")
 	}
 
-	_, err = i.Hash([]byte("Something"), HashWithAlgo("md5"), HashWithFormat("base64"))
+	_, err = i.Hash([]byte("Something"), WithHashAlgo("md5"), WithHashFormat("base64"))
 	if err == nil {
 		t.Error("invalid algo was accepted. error")
 	}

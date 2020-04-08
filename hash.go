@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 )
 
+// HashSpec describes all settings related to hashing
 type HashSpec struct {
 	Algorithm *string
 	Format    *string
@@ -11,15 +12,15 @@ type HashSpec struct {
 
 type HashSpecOption func(spec *HashSpec)
 
-// HashWithAlgo sets an algorithm on a HashSpec
-func HashWithAlgo(algo string) HashSpecOption {
+// WithHashAlgo sets an algorithm on a HashSpec
+func WithHashAlgo(algo string) HashSpecOption {
 	return func(spec *HashSpec) {
 		spec.Algorithm = &algo
 	}
 }
 
-// HashWithFormat sets the format on a HashSpec
-func HashWithFormat(f string) HashSpecOption {
+// WithHashFormat sets the format on a HashSpec
+func WithHashFormat(f string) HashSpecOption {
 	return func(spec *HashSpec) {
 		spec.Format = &f
 	}
