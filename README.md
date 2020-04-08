@@ -1,6 +1,11 @@
 # go-vault-transit
 
-Convenience library for accessing vault's transit engine. Allows for writing application which use Encryption-as-a-service where key material is handled by Vault and not by the application.
+Convenience library for accessing vault's transit engine. Allows for using Encryption-as-a-service from go applications, where key material is handled by Vault and not by the application.
+
+## Prerequisites
+
+* Go 1.13+
+* Vault 1.3+
 
 ## Examples
 
@@ -77,21 +82,19 @@ bOk, err := i.VerifyHmac("key1", input, hmac1, WithHmacAlgo("sha2-512"))
 ### Encryption and Decryption
 
 ```go
-	plaintext := "Something"
-	ciphertext, err := i.Encrypt("key1", []byte(plaintext))
-    decrypted, err := i.Decrypt("key1", ciphertext)
-    // decrypted == plaintext
-
+plaintext := "Something"
+ciphertext, err := i.Encrypt("key1", []byte(plaintext))
+decrypted, err := i.Decrypt("key1", ciphertext)
+// decrypted == plaintext
 ```
 
 ### Signature and Verify
 
 ```go
-	input := "Something"
-	signature, err := i.Sign("key1", []byte(input), WithSignAlgo("sha2-256"))
-    valid, err := i.Verify("key1", []byte(input), signature, WithSignAlgo("sha2-256"))
-    // valid == true
-
+input := "Something"
+signature, err := i.Sign("key1", []byte(input), WithSignAlgo("sha2-256"))
+valid, err := i.Verify("key1", []byte(input), signature, WithSignAlgo("sha2-256"))
+// valid == true
 ```
 
 
