@@ -11,6 +11,7 @@ type HmacSpec struct {
 	KeyVersion *int
 }
 
+// HmacSpecOption is a callback setting the appropriate option argument
 type HmacSpecOption func(spec *HmacSpec)
 
 // WithHmacAlgo sets an algorithm on a HashSpec

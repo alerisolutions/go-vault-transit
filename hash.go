@@ -10,6 +10,7 @@ type HashSpec struct {
 	Format    *string
 }
 
+// HashSpecOption is a callback setting the appropriate option argument
 type HashSpecOption func(spec *HashSpec)
 
 // WithHashAlgo sets an algorithm on a HashSpec
