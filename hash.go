@@ -1,7 +1,9 @@
 package transit
 
 import (
+	"bytes"
 	"encoding/base64"
+	"io"
 )
 
 // HashSpec describes all settings related to hashing
@@ -56,4 +58,11 @@ func (t *Transit) Hash(input []byte, opts ...HashSpecOption) (string, error) {
 	}
 	return res, err
 
+}
+
+// HashFromReader computes a hash from given stream and options
+func (t *Transit) HashFromReader(stream io.Reader, opts ...HashSpecOption) (string, error) {
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(stream)
+	return t.Hash(buf.Bytes(), opts...)
 }

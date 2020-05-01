@@ -1,7 +1,9 @@
 package transit
 
 import (
+	"bytes"
 	"encoding/base64"
+	"io"
 )
 
 // HmacSpec contains hmac parameters
@@ -60,6 +62,13 @@ func (t *Transit) Hmac(keyName string, input []byte, opts ...HmacSpecOption) (st
 
 }
 
+// HmacFromReader computes a HMAC from given key, stream and options
+func (t *Transit) HmacFromReader(keyName string, stream io.Reader, opts ...HmacSpecOption) (string, error) {
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(stream)
+	return t.Hmac(keyName, buf.Bytes(), opts...)
+}
+
 // VerifyHmac verifies an hmac string against the input, given keys and options
 // https://www.vaultproject.io/api/secret/transit/index.html#verify-signed-data
 func (t *Transit) VerifyHmac(keyName string, input []byte, hmac string, opts ...HmacSpecOption) (bool, error) {
@@ -88,4 +97,11 @@ func (t *Transit) VerifyHmac(keyName string, input []byte, hmac string, opts ...
 	}
 	return res, err
 
+}
+
+// VerifyHmacFromReader verifies an hmac string against the input stream, given keys and options
+func (t *Transit) VerifyHmacFromReader(keyName string, stream io.Reader, hmac string, opts ...HmacSpecOption) (bool, error) {
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(stream)
+	return t.VerifyHmac(keyName, buf.Bytes(), hmac, opts...)
 }
