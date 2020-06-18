@@ -1,5 +1,7 @@
 # go-vault-transit
 
+![Go](https://github.com/alerisolutions/go-vault-transit/workflows/Go/badge.svg?branch=master)
+
 Convenience library for accessing vault's transit engine. Allows for using Encryption-as-a-service from go applications, where key material is handled by Vault and not by the application.
 
 ## Prerequisites
