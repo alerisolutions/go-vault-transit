@@ -1,12 +1,15 @@
 package transit
 
 import (
+	"bytes"
 	"fmt"
 	"testing"
 	"time"
 )
 
 func TestHmac(t *testing.T) {
+
+	inp := []byte("Something")
 
 	keyName := fmt.Sprintf("k1-%d", time.Now().Unix())
 	keyType := "aes256-gcm96"
@@ -21,12 +24,20 @@ func TestHmac(t *testing.T) {
 		return
 	}
 
-	hmac1, err := i.Hmac(keyName, []byte("Something"), WithHmacAlgo("sha2-512"))
+	hmac1, err := i.Hmac(keyName, inp, WithHmacAlgo("sha2-512"))
 	if err != nil {
 		t.Errorf("Unable to hmac value. error: %s", err)
 	}
 
-	bOk, err := i.VerifyHmac(keyName, []byte("Something"), hmac1, WithHmacAlgo("sha2-512"))
+	hmac1r, err := i.HmacFromReader(keyName, bytes.NewReader(inp), WithHmacAlgo("sha2-512"))
+	if err != nil {
+		t.Errorf("Unable to hmac stream. error: %s", err)
+	}
+	if hmac1 != hmac1r {
+		t.Errorf("error comparing values (stream/bytes)")
+	}
+
+	bOk, err := i.VerifyHmac(keyName, inp, hmac1, WithHmacAlgo("sha2-512"))
 	if err != nil {
 		t.Errorf("Unable to hmac value. error: %s", err)
 	}
@@ -34,15 +45,15 @@ func TestHmac(t *testing.T) {
 		t.Error("hmac verify returned invalid result.")
 	}
 
-	bOk, err = i.VerifyHmac(keyName, []byte("SomeOtherthing"), hmac1, WithHmacAlgo("sha2-512"))
+	bOk, err = i.VerifyHmacFromReader(keyName, bytes.NewReader(inp), hmac1, WithHmacAlgo("sha2-512"))
 	if err != nil {
-		t.Errorf("Unable to hmac value. error: %s", err)
+		t.Errorf("Unable to hmac stream. error: %s", err)
 	}
-	if bOk {
+	if !bOk {
 		t.Error("hmac verify returned invalid result.")
 	}
 
-	bOk, err = i.VerifyHmac(keyName, []byte("Something"), hmac1, WithHmacAlgo("sha2-256"))
+	bOk, err = i.VerifyHmac(keyName, inp, hmac1, WithHmacAlgo("sha2-256"))
 	if err != nil {
 		t.Errorf("Unable to hmac value. error: %s", err)
 	}

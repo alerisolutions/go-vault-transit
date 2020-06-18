@@ -199,7 +199,9 @@ func TestList(t *testing.T) {
 
 func setup() {
 	cfg := api.DefaultConfig()
-	cfg.ReadEnvironment()
+	if err := cfg.ReadEnvironment(); err != nil {
+		panic(err)
+	}
 
 	cfg.Address = os.Getenv("VAULT_ADDR")
 	if cfg.Address == "" {

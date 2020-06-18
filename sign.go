@@ -10,6 +10,7 @@ type SignSpec struct {
 	KeyVersion *int
 }
 
+// SignSpecOption is a func type for setting the appropriate option argument
 type SignSpecOption func(spec *SignSpec)
 
 // WithSignAlgo sets an algorithm on a SignSpec
