@@ -18,7 +18,14 @@ jobs:
       with:
         go-version: ^1.13
       id: go
-
+     
+    - name: Install vault
+      run: |
+        curl https://releases.hashicorp.com/vault/1.4.2/vault_1.4.2_linux_amd64.zip
+        unzip vault_1.4.2_linux_amd64.zip
+        vault server -dev -dev-root-token-id=root &
+        VAULT_ADDR=http://127.0.0.1:8200/ VAULT_TOKEN=root vault secrets enable transit
+        
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
 
